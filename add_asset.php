@@ -6,8 +6,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 require 'db_connect.php';
 
-// ดึงรายชื่อร้านค้ามาทำ Dropdown
-$v_sql = "SELECT * FROM Vendors ORDER BY vendor_name ASC";
+// ดึงรายชื่อร้านค้ามาทำ Dropdown (ดึง location มาด้วย)
+$v_sql = "SELECT vendor_id, vendor_name, location FROM Vendors ORDER BY vendor_name ASC";
 $v_res = $conn->query($v_sql);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -15,11 +15,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $purchase_date = $_POST['purchase_date'];
     $warranty_expiry_date = $_POST['warranty_expiry_date'];
     
-    // ตรวจสอบว่าเลือกร้านค้าหรือไม่
     $vendor_id = !empty($_POST['vendor_id']) ? "'" . $conn->real_escape_string($_POST['vendor_id']) . "'" : "NULL";
     $user_id = $_SESSION['user_id']; 
 
-    // เพิ่ม vendor_id เข้าไปในคำสั่ง SQL
     $sql = "INSERT INTO Assets (user_id, asset_name, purchase_date, warranty_expiry_date, vendor_id) 
             VALUES ('$user_id', '$asset_name', '$purchase_date', '$warranty_expiry_date', $vendor_id)";
 
@@ -55,7 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="text" name="asset_name" class="form-control" required placeholder="เช่น คีย์บอร์ด Keychron">
                         </div>
 
-                        <!-- เพิ่มช่องเลือกร้านค้าตรงนี้ -->
                         <div class="mb-3">
                             <label class="form-label fw-semibold">ร้านค้าที่ซื้อ</label>
                             <select name="vendor_id" class="form-select">
@@ -63,7 +60,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <?php 
                                 if ($v_res && $v_res->num_rows > 0) {
                                     while($v = $v_res->fetch_assoc()) {
-                                        echo "<option value='".$v['vendor_id']."'>".htmlspecialchars($v['vendor_name'])."</option>";
+                                        $display_text = $v['vendor_name'];
+                                        if (!empty($v['location'])) {
+                                            $display_text .= " (" . $v['location'] . ")";
+                                        }
+                                        echo "<option value='".$v['vendor_id']."'>".htmlspecialchars($display_text)."</option>";
                                     }
                                 }
                                 ?>
