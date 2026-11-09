@@ -31,6 +31,9 @@ $result = $conn->query($sql);
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.php"><i class="fa-solid fa-shield-halved text-info"></i> Gadget & Warranty Vault</a>
             <div class="d-flex align-items-center">
+                <!-- เพิ่มปุ่ม Dashboard ตรงนี้ -->
+                <a href="dashboard.php" class="btn btn-info btn-sm px-3 me-3 text-white fw-bold"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                
                 <span class="text-light me-3 small"><i class="fa-solid fa-user-circle"></i> <?php echo htmlspecialchars($_SESSION['username']); ?></span>
                 <a href="logout.php" class="btn btn-outline-danger btn-sm px-3">ออกจากระบบ</a>
             </div>
@@ -87,8 +90,13 @@ $result = $conn->query($sql);
                                             <td class='text-secondary'>" . $row["expiry_date"] . "</td>
                                             <td>" . $status_html . "</td>
                                             <td class='text-center'>
-                                                <a href='delete_asset.php?id=" . $row["asset_id"] . "' class='btn btn-outline-danger btn-sm px-3' onclick=\"return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบอุปกรณ์นี้?');\">
-                                                    <i class='fa-solid fa-trash-can'></i> ลบ
+                                                <!-- เพิ่มปุ่มดูประวัติซ่อม -->
+                                                <a href='maintenance.php?id=" . $row["asset_id"] . "' class='btn btn-outline-primary btn-sm px-2 me-1' title='ประวัติซ่อม'>
+                                                    <i class='fa-solid fa-wrench'></i>
+                                                </a>
+                                                <!-- ปุ่มลบเดิม -->
+                                                <a href='delete_asset.php?id=" . $row["asset_id"] . "' class='btn btn-outline-danger btn-sm px-2' onclick=\"return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบอุปกรณ์นี้?');\" title='ลบ'>
+                                                    <i class='fa-solid fa-trash-can'></i>
                                                 </a>
                                             </td>
                                           </tr>";
